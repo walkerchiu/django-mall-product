@@ -74,6 +74,7 @@ class VariantFilter(FilterSet):
         fields=(
             ("product__sort_key", "sort_key"),
             ("product__count_access", "count_access"),
+            ("product__count_add_to_cart", "count_add_to_cart"),
             "price_sale_amount",
             "created_at",
             "updated_at",

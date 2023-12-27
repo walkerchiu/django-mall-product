@@ -43,8 +43,42 @@ class IncrementProductCountAccess(graphene.relay.ClientIDMutation):
         return IncrementProductCountAccess(success=True, product=product)
 
 
+class IncrementProductCountAddToCart(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    success = graphene.Boolean()
+    product = graphene.Field(ProductNode)
+
+    @classmethod
+    @transaction.atomic
+    def mutate_and_get_payload(cls, root, info: ResolveInfo, **input):
+        id = input["id"]
+
+        try:
+            _, product_id = from_global_id(id)
+        except:
+            raise Exception("Bad Request!")
+
+        organization = Organization.objects.only("id").get(
+            schema_name=connection.schema_name
+        )
+
+        try:
+            product = Product.objects.get(
+                organization_id=organization.id, pk=product_id
+            )
+            product.count_add_to_cart += 1
+            product.save()
+        except Product.DoesNotExist:
+            raise Exception("Can not find this product!")
+
+        return IncrementProductCountAddToCart(success=True, product=product)
+
+
 class ProductMutation(graphene.ObjectType):
     product_count_access_increment = IncrementProductCountAccess.Field()
+    product_count_add_to_cart_increment = IncrementProductCountAddToCart.Field()
 
 
 class ProductQuery(graphene.ObjectType):

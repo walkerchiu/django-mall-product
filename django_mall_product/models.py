@@ -20,6 +20,7 @@ class Product(CommonDateAndSafeDeleteMixin, PublishableModel):
     sort_key = models.IntegerField(db_index=True, null=True)
     can_search = models.BooleanField(default=True)
     count_access = models.PositiveIntegerField(default=0)
+    count_add_to_cart = models.PositiveIntegerField(default=0)
 
     _safedelete_policy = SOFT_DELETE_CASCADE
 

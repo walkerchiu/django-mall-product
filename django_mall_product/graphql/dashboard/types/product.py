@@ -100,6 +100,7 @@ class ProductFilter(FilterSet):
             ("translations__name", "name"),
             "sort_key",
             "count_access",
+            "count_add_to_cart",
             "created_at",
             "updated_at",
         ),
